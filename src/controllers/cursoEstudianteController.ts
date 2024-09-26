@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { check, validationResult } from 'express-validator';
 import { CursoEstudiante } from '../models/CursoEstudianteModel';
 import { AppDataSource } from '../db/conexion';
-import { Curso } from '../models/CursoModel';
+import { Curso } from '../models/cursoModel';
 import { Estudiante } from '../models/EstudianteModel';
 
 export const validar = () => [
