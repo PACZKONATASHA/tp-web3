@@ -1,0 +1,58 @@
+extends ./layout
+
+block contenido
+    .container.mx-auto.px-4
+        .flex.justify-end.mb-4
+            a.bg-green-600.text-black.font-bold.py-2.px-4.rounded.transition(class="hover:bg-green-700", href="/profesores/crearProfesores") Agregar Profesor
+
+        .py-10
+            h1.text-5xl.my-10.font-extrabold.text-center.text-gray-800
+                | Proyecto
+                span.font-normal.text-gray-600 Universidad
+            h2.text-center.text-2xl.font-extrabold.text-gray-700.mt-4= pagina
+
+            table.table-auto.w-full.mt-8.border-collapse.shadow-lg
+                thead.bg-gray-200
+                    tr
+                        th.border-b.border-gray-300.text-left.text-gray-600.uppercase.px-6.py-3 Dni
+                        th.border-b.border-gray-300.text-left.text-gray-600.uppercase.px-6.py-3 Nombre
+                        th.border-b.border-gray-300.text-left.text-gray-600.uppercase.px-6.py-3 Apellido
+                        th.border-b.border-gray-300.text-left.text-gray-600.uppercase.px-6.py-3 Email
+                        th.border-b.border-gray-300.text-left.text-gray-600.uppercase.px-6.py-3 Profesión
+                        th.border-b.border-gray-300.text-left.text-gray-600.uppercase.px-6.py-3 Teléfono
+                        th.border-b.border-gray-300.text-left.text-gray-600.uppercase.px-6.py-3 Acciones
+                tbody
+                    each profesor in profesores
+                        tr(class="hover:bg-gray-100 transition")
+                            td.border-b.border-gray-300.px-6.py-4.text-gray-700= profesor.dni
+                            td.border-b.border-gray-300.px-6.py-4.text-gray-700= profesor.nombre
+                            td.border-b.border-gray-300.px-6.py-4.text-gray-700= profesor.apellido
+                            td.border-b.border-gray-300.px-6.py-4.text-gray-700= profesor.email
+                            td.border-b.border-gray-300.px-6.py-4.text-gray-700= profesor.profesion
+                            td.border-b.border-gray-300.px-6.py-4.text-gray-700= profesor.telefono
+                            td.border-b.border-gray-300.px-6.py-4
+                                a.bg-blue-500.text-white.font-bold.py-1.px-3.rounded.transition(href=`/profesores/modificarProfesor/${profesor.id}`, class="hover:bg-blue-700") Editar
+                                a.bg-red-500.text-white.font-bold.py-1.px-3.rounded.transition.ml-2(href="#", onclick=`eliminarProfesor('${profesor.id}')`, class="hover:bg-red-700") Eliminar
+
+block scripts
+    script.
+        function eliminarProfesor(id) {
+            if (confirm('¿Estás seguro de que deseas eliminar este profesor?')) {
+                fetch(`/profesores/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.mensaje === 'Profesor eliminado') {
+                        alert('Profesor eliminado con éxito.');
+                        window.location.reload(); 
+                    } else {
+                        alert(data.mensaje); 
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al eliminar el profesor.');
+                });
+            }
+        }
