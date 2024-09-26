@@ -71,8 +71,6 @@ router.get('/modificarNota/:curso_id/:estudiante_id', (req, res) => __awaiter(vo
         }
     }
 }));
-// Procesar actualización de nota
 router.put('/modificarNota/:curso_id/:estudiante_id', (0, cursoEstudianteController_1.validar)(), cursoEstudianteController_1.actualizarNota);
-// Eliminar inscripción
 router.delete('/eliminarInscripcion/:curso_id/:estudiante_id', cursoEstudianteController_1.eliminarInscripcion);
 exports.default = router;

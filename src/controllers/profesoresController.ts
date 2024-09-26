@@ -17,7 +17,7 @@ export const validar = () => [
     (req: Request, res: Response, next: NextFunction) => {
         const errores = validationResult(req);
         if (!errores.isEmpty()) {
-            return res.render('creaProfesores', {
+            return res.render('crearProfesores', {
                 pagina: 'Crear Profesor',
                 errores: errores.array()
             });

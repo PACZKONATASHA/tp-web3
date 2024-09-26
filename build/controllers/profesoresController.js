@@ -26,7 +26,7 @@ const validar = () => [
     (req, res, next) => {
         const errores = (0, express_validator_1.validationResult)(req);
         if (!errores.isEmpty()) {
-            return res.render('creaProfesores', {
+            return res.render('crearProfesores', {
                 pagina: 'Crear Profesor',
                 errores: errores.array()
             });
