@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.eliminar = exports.modificar = exports.insertar = exports.consultarUno = exports.consultarTodos = exports.validar = void 0;
 const express_validator_1 = require("express-validator");
 const ProfesorModel_1 = require("../models/ProfesorModel");
-const conexion_1 = require("../db/conexion");
+const db_1 = require("../db/db");
 var profesores;
 const validar = () => [
     (0, express_validator_1.check)('dni')
@@ -37,7 +37,7 @@ const validar = () => [
 exports.validar = validar;
 const consultarTodos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const profesorRepository = conexion_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
+        const profesorRepository = db_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
         profesores = yield profesorRepository.find();
         res.render('listarProfesores', {
             pagina: 'Lista de Profesores',
@@ -58,7 +58,7 @@ const consultarUno = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         throw new Error('ID inválido, debe ser un número');
     }
     try {
-        const profesorRepository = conexion_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
+        const profesorRepository = db_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
         const profesor = yield profesorRepository.findOne({ where: { id: idNumber } });
         if (profesor) {
             return profesor;
@@ -85,9 +85,9 @@ const insertar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             errores: errores.array()
         });
     }
-    const { dni, nombre, apellido, email } = req.body;
+    const { dni, nombre, apellido, email, profesion, telefono } = req.body;
     try {
-        yield conexion_1.AppDataSource.transaction((transactionalEntityManager) => __awaiter(void 0, void 0, void 0, function* () {
+        yield db_1.AppDataSource.transaction((transactionalEntityManager) => __awaiter(void 0, void 0, void 0, function* () {
             const profesorRepository = transactionalEntityManager.getRepository(ProfesorModel_1.Profesor);
             const existeProfesor = yield profesorRepository.findOne({
                 where: [
@@ -98,10 +98,10 @@ const insertar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             if (existeProfesor) {
                 throw new Error('El profesor ya existe.');
             }
-            const nuevoProfesor = profesorRepository.create({ dni, nombre, apellido, email });
+            const nuevoProfesor = profesorRepository.create({ dni, nombre, apellido, email, profesion, telefono });
             yield profesorRepository.save(nuevoProfesor);
         }));
-        const profesores = yield conexion_1.AppDataSource.getRepository(ProfesorModel_1.Profesor).find();
+        const profesores = yield db_1.AppDataSource.getRepository(ProfesorModel_1.Profesor).find();
         res.render('listarProfesores', {
             pagina: 'Lista de Profesores',
             profesores
@@ -116,14 +116,14 @@ const insertar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.insertar = insertar;
 const modificar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const { dni, nombre, apellido, email } = req.body;
+    const { dni, nombre, apellido, email, profesion, telefono } = req.body;
     try {
-        const profesorRepository = conexion_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
+        const profesorRepository = db_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
         const profesor = yield profesorRepository.findOne({ where: { id: parseInt(id) } });
         if (!profesor) {
             return res.status(404).send('Profesor no encontrado');
         }
-        profesorRepository.merge(profesor, { dni, nombre, apellido, email });
+        profesorRepository.merge(profesor, { dni, nombre, apellido, email, profesion, telefono });
         yield profesorRepository.save(profesor);
         return res.redirect('/profesores/listarProfesores');
     }
@@ -136,7 +136,7 @@ exports.modificar = modificar;
 const eliminar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        yield conexion_1.AppDataSource.transaction((transactionalEntityManager) => __awaiter(void 0, void 0, void 0, function* () {
+        yield db_1.AppDataSource.transaction((transactionalEntityManager) => __awaiter(void 0, void 0, void 0, function* () {
             const profesorRepository = transactionalEntityManager.getRepository(ProfesorModel_1.Profesor);
             const deleteResult = yield profesorRepository.delete(id);
             if (deleteResult.affected === 1) {

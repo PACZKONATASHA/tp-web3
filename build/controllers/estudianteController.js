@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.eliminar = exports.modificar = exports.insertar = exports.consultarUno = exports.consultarTodos = exports.validar = void 0;
 const express_validator_1 = require("express-validator");
 const EstudianteModel_1 = require("../models/EstudianteModel");
-const conexion_1 = require("../db/conexion");
-const CursoEstudianteModel_1 = require("../models/CursoEstudianteModel");
+const db_1 = require("../db/db");
+const CursosEstudiantesModel_1 = require("../models/CursosEstudiantesModel");
 var estudiantes;
 const validar = () => [
     (0, express_validator_1.check)('dni')
@@ -38,7 +38,7 @@ const validar = () => [
 exports.validar = validar;
 const consultarTodos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const estudianteRepository = conexion_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante);
+        const estudianteRepository = db_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante);
         estudiantes = yield estudianteRepository.find();
         res.render('listarEstudiantes', {
             pagina: 'Lista de Estudiantes',
@@ -59,7 +59,7 @@ const consultarUno = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         throw new Error('ID inválido, debe ser un número');
     }
     try {
-        const estudianteRepository = conexion_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante);
+        const estudianteRepository = db_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante);
         const estudiante = yield estudianteRepository.findOne({ where: { id: idNumber } });
         if (estudiante) {
             return estudiante;
@@ -88,7 +88,7 @@ const insertar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     const { dni, nombre, apellido, email } = req.body;
     try {
-        yield conexion_1.AppDataSource.transaction((transactionalEntityManager) => __awaiter(void 0, void 0, void 0, function* () {
+        yield db_1.AppDataSource.transaction((transactionalEntityManager) => __awaiter(void 0, void 0, void 0, function* () {
             const estudianteRepository = transactionalEntityManager.getRepository(EstudianteModel_1.Estudiante);
             const existeEstudiante = yield estudianteRepository.findOne({
                 where: [
@@ -102,7 +102,7 @@ const insertar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             const nuevoEstudiante = estudianteRepository.create({ dni, nombre, apellido, email });
             yield estudianteRepository.save(nuevoEstudiante);
         }));
-        const estudiantes = yield conexion_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante).find();
+        const estudiantes = yield db_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante).find();
         res.render('listarEstudiantes', {
             pagina: 'Lista de Estudiantes',
             estudiantes
@@ -119,7 +119,7 @@ const modificar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { dni, nombre, apellido, email } = req.body;
     try {
-        const estudianteRepository = conexion_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante);
+        const estudianteRepository = db_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante);
         const estudiante = yield estudianteRepository.findOne({ where: { id: parseInt(id) } });
         if (!estudiante) {
             return res.status(404).send('Estudiante no encontrado');
@@ -137,9 +137,9 @@ exports.modificar = modificar;
 const eliminar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        //console.log(`ID recibido para eliminar: ${id}`); 
-        yield conexion_1.AppDataSource.transaction((transactionalEntityManager) => __awaiter(void 0, void 0, void 0, function* () {
-            const cursosEstudiantesRepository = transactionalEntityManager.getRepository(CursoEstudianteModel_1.CursoEstudiante);
+        console.log(`ID recibido para eliminar: ${id}`);
+        yield db_1.AppDataSource.transaction((transactionalEntityManager) => __awaiter(void 0, void 0, void 0, function* () {
+            const cursosEstudiantesRepository = transactionalEntityManager.getRepository(CursosEstudiantesModel_1.CursoEstudiante);
             const estudianteRepository = transactionalEntityManager.getRepository(EstudianteModel_1.Estudiante);
             const cursosRelacionados = yield cursosEstudiantesRepository.count({ where: { estudiante: { id: Number(id) } } });
             if (cursosRelacionados > 0) {

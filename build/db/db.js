@@ -45,14 +45,20 @@ dotenv.config();
 const port = process.env.BD_PORT ? parseInt(process.env.BD_PORT, 10) : 3306;
 function createDatabaseIfNotExists() {
     return __awaiter(this, void 0, void 0, function* () {
-        const connection = yield (0, promise_1.createConnection)({
-            host: process.env.DB_HOST,
-            port,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD
-        });
-        yield connection.query(`CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}`);
-        connection.end();
+        try {
+            const connection = yield (0, promise_1.createConnection)({
+                host: process.env.DB_HOST,
+                port,
+                user: process.env.DB_USER,
+                password: process.env.DB_PASSWORD
+            });
+            yield connection.query(`CREATE DATABASE IF NOT EXISTS ${process.env.DB_NAME}`);
+            connection.end();
+        }
+        catch (error) {
+            console.error('Error al crear la base de datos: ', error);
+            throw error;
+        }
     });
 }
 exports.AppDataSource = new typeorm_1.DataSource({
@@ -62,8 +68,8 @@ exports.AppDataSource = new typeorm_1.DataSource({
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [ProfesorModel_1.ProfesorModel, EstudianteModel_1.EstudianteModel, CursoModel_1.CursoModel, CursosEstudiantesModel_1.CursosEstudiantesModel],
-    synchronize: true,
+    entities: [ProfesorModel_1.Profesor, EstudianteModel_1.Estudiante, CursoModel_1.Curso, CursosEstudiantesModel_1.CursoEstudiante],
+    synchronize: false,
     logging: true
 });
 function intializeDatabase() {

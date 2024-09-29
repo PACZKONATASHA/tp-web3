@@ -26,7 +26,7 @@ block contenido
                             td.border-b.border-gray-300.px-6.py-4.text-gray-700= curso.profesor ? curso.profesor.nombre + ' ' + curso.profesor.apellido : 'Sin profesor'
                             td.border-b.border-gray-300.px-6.py-4
                                 a.bg-blue-500.text-white.font-bold.py-1.px-3.rounded.transition(href=`/cursos/modificarCurso/${curso.id}`, class="hover:bg-blue-700") Editar
-                                a.bg-red-500.text-white.font-bold.py-1.px-3.rounded.transition.ml-2(href="#", onclick=`eliminarCurso('${curso.id}')`, class="hover:bg-red-700") Eliminar
+                                a.bg-red-600.text-white.font-bold.py-1.px-3.rounded.transition.ml-2(href="#", onclick=`eliminarCurso('${curso.id}')`, class="hover:bg-red-900") Eliminar
 
 block scripts
     script.

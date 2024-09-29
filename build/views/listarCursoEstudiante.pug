@@ -17,7 +17,6 @@ block contenido
                         th.border-b.border-gray-300.text-left.text-gray-600.uppercase.px-6.py-3 Curso
                         th.border-b.border-gray-300.text-left.text-gray-600.uppercase.px-6.py-3 Estudiante
                         th.border-b.border-gray-300.text-left.text-gray-600.uppercase.px-6.py-3 Nota
-                        th.border-b.border-gray-300.text-left.text-gray-600.uppercase.px-6.py-3 Fecha
                         th.border-b.border-gray-300.text-left.text-gray-600.uppercase.px-6.py-3 Acciones
                 tbody
                     each inscripcion in inscripciones
@@ -25,10 +24,10 @@ block contenido
                             td.border-b.border-gray-300.px-6.py-4.text-gray-700= inscripcion.curso.nombre
                             td.border-b.border-gray-300.px-6.py-4.text-gray-700= inscripcion.estudiante.nombre + ' ' + inscripcion.estudiante.apellido
                             td.border-b.border-gray-300.px-6.py-4.text-gray-700= inscripcion.nota
-                            td.border-b.border-gray-300.px-6.py-4.text-gray-700= inscripcion.fecha.toLocaleDateString()
+                            
                             td.border-b.border-gray-300.px-6.py-4
                                 a.bg-blue-500.text-white.font-bold.py-1.px-3.rounded.transition(href=`/cursoEstudiante/modificarNota/${inscripcion.curso_id}/${inscripcion.estudiante_id}`, class="hover:bg-blue-700") Modificar Nota
-                                a.bg-red-500.text-white.font-bold.py-1.px-3.rounded.transition.ml-2(href="#", onclick=`eliminarInscripcion('${inscripcion.curso_id}', '${inscripcion.estudiante_id}')`, class="hover:bg-red-700") Eliminar
+                                a.bg-red-600.text-white.font-bold.py-1.px-3.rounded.transition.ml-2(onclick=`eliminarInscripcion('${inscripcion.curso_id}', '${inscripcion.estudiante_id}')`, class="hover:bg-red-900") Eliminar
 
 block scripts
     script.

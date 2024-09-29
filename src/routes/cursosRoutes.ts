@@ -1,7 +1,7 @@
 import express from 'express';
-import { insertar, modificar, eliminar, validar, consultarUno, consultarTodos } from '../controllers/cursoController';
+import { insertar, modificar, eliminar, validar, consultarUno, consultarTodos } from '../controllers/CursoController';
 import { Profesor } from '../models/ProfesorModel';
-import { AppDataSource } from '../db/conexion';
+import { AppDataSource } from '../db/db';
 
 const router = express.Router();
 

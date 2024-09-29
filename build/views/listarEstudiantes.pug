@@ -28,7 +28,7 @@ block contenido
                             td.border-b.border-gray-300.px-6.py-4.text-gray-700= estudiante.email
                             td.border-b.border-gray-300.px-6.py-4
                                 a.bg-blue-500.text-white.font-bold.py-1.px-3.rounded.transition(href=`/estudiantes/modificarEstudiante/${estudiante.id}`, class="hover:bg-blue-700") Editar
-                                a.bg-red-500.text-white.font-bold.py-1.px-3.rounded.transition.ml-2(href="#", onclick=`eliminarEstudiante('${estudiante.id}')`, class="hover:bg-red-700") Eliminar
+                                a.bg-red-600.text-black.font-bold.py-1.px-3.rounded.transition.ml-2(onclick=`eliminarEstudiante('${estudiante.id}')`, class="hover:bg-red-900") Eliminar
 
 block scripts
     script.

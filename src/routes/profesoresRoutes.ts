@@ -1,5 +1,5 @@
 import express from 'express';
-import { insertar, modificar, eliminar, validar, consultarUno, consultarTodos } from '../controllers/profesoresController';
+import { insertar, modificar, eliminar, validar, consultarUno, consultarTodos } from '../controllers/ProfesorController';
 
 const router = express.Router();
 

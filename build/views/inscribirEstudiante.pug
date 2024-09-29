@@ -19,13 +19,13 @@ block contenido
             form.mt-8(method="POST", action="/cursoEstudiante/inscribirEstudiante")
                 .mb-4
                     label.block.text-gray-700.text-sm.font-bold.mb-2(for="estudiante_id") Estudiante
-                    select#estudiante_id.block.appearance-none.w-full.bg-white.border.border-gray-400.hover (name="estudiante_id")
+                    select#estudiante_id.block.appearance-none.w-full.bg-white.border.border-gray-400.hover(name="estudiante_id")
                         option(value="") Selecciona un estudiante
                         each estudiante in estudiantes
                             option(value=estudiante.id)= estudiante.nombre + ' ' + estudiante.apellido
                 .mb-4
                     label.block.text-gray-700.text-sm.font-bold.mb-2(for="curso_id") Curso
-                    select#curso_id.block.appearance-none.w-full.bg-white.border.border-gray-400.hover (name="curso_id")
+                    select#curso_id.block.appearance-none.w-full.bg-white.border.border-gray-400.hover(name="curso_id")
                         option(value="") Selecciona un curso
                         each curso in cursos
                             option(value=curso.id)= curso.nombre
@@ -36,4 +36,3 @@ block contenido
                     button.bg-green-500.hover(type="submit") Inscribir Estudiante
 
 block scripts
-    // Aquí puedes agregar scripts adicionales si es necesario

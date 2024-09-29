@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { check, validationResult } from 'express-validator';
-import { CursoEstudiante } from '../models/CursoEstudianteModel';
-import { AppDataSource } from '../db/conexion';
-import { Curso } from '../models/cursoModel';
+import { CursoEstudiante } from '../models/CursosEstudiantesModel';
+import { AppDataSource } from '../db/db';
+import { Curso } from '../models/CursoModel';
 import { Estudiante } from '../models/EstudianteModel';
 
 export const validar = () => [
@@ -46,6 +46,16 @@ export const validar = () => [
 export const inscribirEstudiante = async (req: Request, res: Response) => {
     console.log('Datos recibidos de inscribirEstudiante:', req.body);
     const { curso_id, estudiante_id, nota } = req.body;
+    
+    console.log('curso_id:', curso_id, 'estudiante_id:', estudiante_id);
+
+    if (!curso_id || isNaN(curso_id)) {
+        return res.status(400).json({ error: 'curso_id es inválido o no está presente' });
+    }
+
+    if (!estudiante_id || isNaN(estudiante_id)) {
+        return res.status(400).json({ error: 'estudiante_id es inválido o no está presente' });
+    }
 
     try {
         const cursoRepository = AppDataSource.getRepository(Curso);

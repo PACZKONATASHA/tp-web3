@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { check, validationResult } from 'express-validator';
 import { Estudiante } from '../models/EstudianteModel';
-import { AppDataSource } from '../db/conexion';
-import { CursoEstudiante } from '../models/CursoEstudianteModel';
+import { AppDataSource } from '../db/db';
+import { CursoEstudiante } from '../models/CursosEstudiantesModel';
 
 var estudiantes: Estudiante[]; 
 
@@ -128,7 +128,7 @@ export const modificar = async (req: Request, res: Response)=> {
 export const eliminar = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
     try {
-        //console.log(`ID recibido para eliminar: ${id}`); 
+        console.log(`ID recibido para eliminar: ${id}`); 
         await AppDataSource.transaction(async transactionalEntityManager => {
             const cursosEstudiantesRepository = transactionalEntityManager.getRepository(CursoEstudiante);
             const estudianteRepository = transactionalEntityManager.getRepository(Estudiante);

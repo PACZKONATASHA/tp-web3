@@ -1,5 +1,5 @@
 import app from "./app"
-import {intializeDatabase} from './db/conexion'
+import {intializeDatabase} from './db/db'
 import * as dotenv from 'dotenv';
 dotenv.config();
 const port=parseInt(process.env.PORT || '6505',10);

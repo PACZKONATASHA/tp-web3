@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const app_1 = __importDefault(require("./app"));
-const conexion_1 = require("./db/conexion");
+const db_1 = require("./db/db");
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 const port = parseInt(process.env.PORT || '6505', 10);
@@ -44,7 +44,7 @@ const host = process.env.HOST || '0.0.0.0';
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            yield (0, conexion_1.intializeDatabase)();
+            yield (0, db_1.intializeDatabase)();
             console.log('Base de datos conectada');
             app_1.default.listen(port, host, () => {
                 console.log(`Servidor activo en puerto ${port}`);

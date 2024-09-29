@@ -13,15 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const cursoController_1 = require("../controllers/cursoController");
+const CursoController_1 = require("../controllers/CursoController");
 const ProfesorModel_1 = require("../models/ProfesorModel");
-const conexion_1 = require("../db/conexion");
+const db_1 = require("../db/db");
 const router = express_1.default.Router();
-router.get('/listarCursos', cursoController_1.consultarTodos);
+router.get('/listarCursos', CursoController_1.consultarTodos);
 // Insertar
 router.get('/crearCursos', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const profesorRepository = conexion_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
+        const profesorRepository = db_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
         const profesores = yield profesorRepository.find();
         res.render('crearCursos', {
             pagina: 'Crear Curso',
@@ -34,14 +34,14 @@ router.get('/crearCursos', (req, res) => __awaiter(void 0, void 0, void 0, funct
         }
     }
 }));
-router.post('/', (0, cursoController_1.validar)(), cursoController_1.insertar);
+router.post('/', (0, CursoController_1.validar)(), CursoController_1.insertar);
 router.get('/modificarCurso/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const curso = yield (0, cursoController_1.consultarUno)(req, res);
+        const curso = yield (0, CursoController_1.consultarUno)(req, res);
         if (!curso) {
             return res.status(404).send('Curso no encontrado');
         }
-        const profesorRepository = conexion_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
+        const profesorRepository = db_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
         const profesores = yield profesorRepository.find();
         res.render('modificarCurso', {
             pagina: 'Modificar Curso',
@@ -55,7 +55,7 @@ router.get('/modificarCurso/:id', (req, res) => __awaiter(void 0, void 0, void 0
         }
     }
 }));
-router.put('/:id', cursoController_1.modificar);
+router.put('/:id', CursoController_1.modificar);
 // Eliminar
-router.delete('/:id', cursoController_1.eliminar);
+router.delete('/:id', CursoController_1.eliminar);
 exports.default = router;

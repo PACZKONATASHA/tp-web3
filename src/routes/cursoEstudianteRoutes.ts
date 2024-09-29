@@ -1,8 +1,9 @@
 import express from 'express';
-import { inscribirEstudiante, actualizarNota, eliminarInscripcion, obtenerEstudiantesPorCurso, obtenerCursosPorEstudiante, validar, listarInscripciones } from '../controllers/cursoEstudianteController';
+import { inscribirEstudiante, actualizarNota, eliminarInscripcion, obtenerEstudiantesPorCurso
+            , obtenerCursosPorEstudiante, validar, listarInscripciones } from '../controllers/CursoEstudianteController';
 import { Estudiante } from '../models/EstudianteModel';
 import { Curso } from '../models/CursoModel';
-import { AppDataSource } from '../db/conexion';
+import { AppDataSource } from '../db/db';
 
 const router = express.Router();
 
@@ -39,9 +40,6 @@ router.post('/inscribirEstudiante', validar(), inscribirEstudiante);
 
 // Procesar actualización de nota
 router.post('/modificarNota/:curso_id/:estudiante_id', validar(), actualizarNota);
-
-// Procesar inscripción de estudiante en curso
-router.post('/inscribirEstudiante', validar(), inscribirEstudiante);
 
 // Renderizar formulario para actualizar nota
 router.get('/modificarNota/:curso_id/:estudiante_id', async (req, res) => {

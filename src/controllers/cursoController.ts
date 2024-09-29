@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { check, validationResult } from 'express-validator';
 import { Curso } from '../models/CursoModel';
-import { AppDataSource } from '../db/conexion';
+import { AppDataSource } from '../db/db';
 import { Profesor } from '../models/ProfesorModel';
 import { Estudiante } from '../models/EstudianteModel';
 

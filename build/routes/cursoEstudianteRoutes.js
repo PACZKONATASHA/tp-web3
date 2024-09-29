@@ -13,21 +13,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const cursoEstudianteController_1 = require("../controllers/cursoEstudianteController");
+const CursoEstudianteController_1 = require("../controllers/CursoEstudianteController");
 const EstudianteModel_1 = require("../models/EstudianteModel");
 const CursoModel_1 = require("../models/CursoModel");
-const conexion_1 = require("../db/conexion");
+const db_1 = require("../db/db");
 const router = express_1.default.Router();
 // Listar estudiantes por curso
-router.get('/listarEstudiantesPorCurso/:curso_id', cursoEstudianteController_1.obtenerEstudiantesPorCurso);
+router.get('/listarEstudiantesPorCurso/:curso_id', CursoEstudianteController_1.obtenerEstudiantesPorCurso);
 // Listar cursos por estudiante
-router.get('/listarCursosPorEstudiante/:estudiante_id', cursoEstudianteController_1.obtenerCursosPorEstudiante);
-router.get('/listarInscripciones', cursoEstudianteController_1.listarInscripciones);
+router.get('/listarCursosPorEstudiante/:estudiante_id', CursoEstudianteController_1.obtenerCursosPorEstudiante);
+router.get('/listarInscripciones', CursoEstudianteController_1.listarInscripciones);
 // Renderizar formulario para inscribir estudiante en curso
 router.get('/inscribirEstudiante', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const estudianteRepository = conexion_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante);
-        const cursoRepository = conexion_1.AppDataSource.getRepository(CursoModel_1.Curso);
+        const estudianteRepository = db_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante);
+        const cursoRepository = db_1.AppDataSource.getRepository(CursoModel_1.Curso);
         const estudiantes = yield estudianteRepository.find();
         const cursos = yield cursoRepository.find();
         res.render('inscribirEstudiante', {
@@ -43,17 +43,15 @@ router.get('/inscribirEstudiante', (req, res) => __awaiter(void 0, void 0, void 
     }
 }));
 // Procesar inscripción de estudiante en curso
-router.post('/inscribirEstudiante', (0, cursoEstudianteController_1.validar)(), cursoEstudianteController_1.inscribirEstudiante);
+router.post('/inscribirEstudiante', (0, CursoEstudianteController_1.validar)(), CursoEstudianteController_1.inscribirEstudiante);
 // Procesar actualización de nota
-router.post('/modificarNota/:curso_id/:estudiante_id', (0, cursoEstudianteController_1.validar)(), cursoEstudianteController_1.actualizarNota);
-// Procesar inscripción de estudiante en curso
-router.post('/inscribirEstudiante', (0, cursoEstudianteController_1.validar)(), cursoEstudianteController_1.inscribirEstudiante);
+router.post('/modificarNota/:curso_id/:estudiante_id', (0, CursoEstudianteController_1.validar)(), CursoEstudianteController_1.actualizarNota);
 // Renderizar formulario para actualizar nota
 router.get('/modificarNota/:curso_id/:estudiante_id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { curso_id, estudiante_id } = req.params;
-        const cursoRepository = conexion_1.AppDataSource.getRepository(CursoModel_1.Curso);
-        const estudianteRepository = conexion_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante);
+        const cursoRepository = db_1.AppDataSource.getRepository(CursoModel_1.Curso);
+        const estudianteRepository = db_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante);
         const curso = yield cursoRepository.findOne({ where: { id: Number(curso_id) } });
         const estudiante = yield estudianteRepository.findOne({ where: { id: Number(estudiante_id) } });
         if (!curso || !estudiante) {
@@ -71,6 +69,6 @@ router.get('/modificarNota/:curso_id/:estudiante_id', (req, res) => __awaiter(vo
         }
     }
 }));
-router.put('/modificarNota/:curso_id/:estudiante_id', (0, cursoEstudianteController_1.validar)(), cursoEstudianteController_1.actualizarNota);
-router.delete('/eliminarInscripcion/:curso_id/:estudiante_id', cursoEstudianteController_1.eliminarInscripcion);
+router.put('/modificarNota/:curso_id/:estudiante_id', (0, CursoEstudianteController_1.validar)(), CursoEstudianteController_1.actualizarNota);
+router.delete('/eliminarInscripcion/:curso_id/:estudiante_id', CursoEstudianteController_1.eliminarInscripcion);
 exports.default = router;

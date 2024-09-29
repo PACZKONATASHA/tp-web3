@@ -7,16 +7,14 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
 const path_1 = __importDefault(require("path"));
-const estudianteRouter_1 = __importDefault(require("./routes/estudianteRouter"));
-const profesorRoutes_1 = __importDefault(require("./routes/profesorRoutes"));
-const cursosRouter_1 = __importDefault(require("./routes/cursosRouter"));
-const cursoEstudianteRouter_1 = __importDefault(require("./routes/cursoEstudianteRouter"));
+const estudianteRoutes_1 = __importDefault(require("./routes/estudianteRoutes"));
+const profesoresRoutes_1 = __importDefault(require("./routes/profesoresRoutes"));
+const cursosRoutes_1 = __importDefault(require("./routes/cursosRoutes"));
+const cursoEstudianteRoutes_1 = __importDefault(require("./routes/cursoEstudianteRoutes"));
 const method_override_1 = __importDefault(require("method-override"));
 const app = (0, express_1.default)();
-// Habilitamos Pug
 app.set('view engine', 'pug');
 app.set('views', path_1.default.join(__dirname, '/views'));
-// Carpeta pública
 app.use(express_1.default.static('public'));
 app.use((0, method_override_1.default)('_method'));
 app.use(express_1.default.json());
@@ -28,12 +26,8 @@ app.get('/', (req, res) => {
         pagina: 'App Universidad',
     });
 });
-// Rutas de estudiantes
-app.use('/estudiantes', estudianteRouter_1.default);
-// Rutas de profesores
-app.use('/profesores', profesorRoutes_1.default);
-// Rutas de cursos
-app.use('/cursos', cursosRouter_1.default);
-// Rutas de cursoestudiante
-app.use('/cursoestudiante', cursoEstudianteRouter_1.default);
+app.use('/estudiantes', estudianteRoutes_1.default);
+app.use('/profesores', profesoresRoutes_1.default);
+app.use('/cursos', cursosRoutes_1.default);
+app.use('/cursoestudiante', cursoEstudianteRoutes_1.default);
 exports.default = app;

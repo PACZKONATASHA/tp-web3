@@ -9,70 +9,111 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.calificar = exports.cancelarInscripcion = exports.inscribir = exports.consultarxCurso = exports.consultarxAlumno = exports.consultarInscripciones = void 0;
-const consultarInscripciones = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        res.json('Consulta inscripciones');
+const db_1 = require("../db/db");
+const CursosEstudiantesModel_1 = require("../models/CursosEstudiantesModel");
+const inscripcionRepository = db_1.AppDataSource.getRepository(CursosEstudiantesModel_1.CursosEstudiantesModel);
+class InscripcionController {
+    constructor() { }
+    consultarTodos(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const inscripciones = yield inscripcionRepository.find();
+                res.json(inscripciones);
+            }
+            catch (err) {
+                if (err instanceof Error) {
+                    res.status(500).json({ message: err.message });
+                }
+            }
+        });
     }
-    catch (err) {
-        if (err instanceof Error) {
-            res.status(500).send(err.message);
-        }
+    consultarUno(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { estudiante_id, curso_id } = req.params;
+            try {
+                const inscripcion = yield inscripcionRepository.findOneBy({
+                    estudiante_id: parseInt(estudiante_id),
+                    curso_id: parseInt(curso_id)
+                });
+                if (!inscripcion) {
+                    res.status(404).json({ message: "Inscripción no encontrada" });
+                    return;
+                }
+                res.json(inscripcion);
+            }
+            catch (err) {
+                if (err instanceof Error) {
+                    res.status(500).json({ message: err.message });
+                    return;
+                }
+            }
+        });
     }
-});
-exports.consultarInscripciones = consultarInscripciones;
-const consultarxAlumno = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        res.json('Consulta un prof');
+    insertar(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const crearInscripcion = inscripcionRepository.create(req.body);
+                const guardarInscripcion = yield inscripcionRepository.save(crearInscripcion);
+                res.status(201).json(guardarInscripcion); // Cambiar a 201 para creación exitosa
+            }
+            catch (err) {
+                if (err instanceof Error) {
+                    res.status(500).json({ message: err.message });
+                    return;
+                }
+            }
+        });
     }
-    catch (err) {
-        if (err instanceof Error) {
-            res.status(500).send(err.message);
-        }
+    modificar(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { estudiante_id, curso_id } = req.params;
+            try {
+                const modificarInscripcion = yield inscripcionRepository.findOneBy({
+                    estudiante_id: parseInt(estudiante_id),
+                    curso_id: parseInt(curso_id)
+                });
+                if (!modificarInscripcion) {
+                    res.status(404).json({ message: "Inscripción no encontrada" });
+                    return;
+                }
+                inscripcionRepository.merge(modificarInscripcion, req.body);
+                const inscripcionResult = yield inscripcionRepository.save(modificarInscripcion);
+                res.json(inscripcionResult);
+            }
+            catch (err) {
+                if (err instanceof Error) {
+                    res.status(500).json({ message: err.message });
+                    return;
+                }
+            }
+        });
     }
-});
-exports.consultarxAlumno = consultarxAlumno;
-const consultarxCurso = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        res.json('inserta prof');
+    eliminar(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { estudiante_id, curso_id } = req.params;
+            try {
+                const eliminarInscripcion = yield inscripcionRepository.delete({
+                    estudiante_id: parseInt(estudiante_id),
+                    curso_id: parseInt(curso_id)
+                });
+                if (eliminarInscripcion.affected === 0) {
+                    res.status(404).json({
+                        message: "Inscripción no encontrada"
+                    });
+                    return;
+                }
+                res.status(200).json({
+                    message: "Inscripción eliminada correctamente"
+                });
+            }
+            catch (err) {
+                if (err instanceof Error) {
+                    res.status(500).json({
+                        message: err.message
+                    });
+                }
+            }
+        });
     }
-    catch (err) {
-        if (err instanceof Error) {
-            res.status(500).send(err.message);
-        }
-    }
-});
-exports.consultarxCurso = consultarxCurso;
-const inscribir = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        res.json('modifica prof');
-    }
-    catch (err) {
-        if (err instanceof Error) {
-            res.status(500).send(err.message);
-        }
-    }
-});
-exports.inscribir = inscribir;
-const cancelarInscripcion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        res.json('elimina prof');
-    }
-    catch (err) {
-        if (err instanceof Error) {
-            res.status(500).send(err.message);
-        }
-    }
-});
-exports.cancelarInscripcion = cancelarInscripcion;
-const calificar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        res.json('elimina prof');
-    }
-    catch (err) {
-        if (err instanceof Error) {
-            res.status(500).send(err.message);
-        }
-    }
-});
-exports.calificar = calificar;
+}
+exports.default = new InscripcionController();

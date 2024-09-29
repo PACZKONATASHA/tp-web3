@@ -11,8 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.eliminarInscripcion = exports.obtenerCursosPorEstudiante = exports.obtenerEstudiantesPorCurso = exports.listarInscripciones = exports.actualizarNota = exports.inscribirEstudiante = exports.validar = void 0;
 const express_validator_1 = require("express-validator");
-const CursoEstudianteModel_1 = require("../models/CursoEstudianteModel");
-const conexion_1 = require("../db/conexion");
+const CursosEstudiantesModel_1 = require("../models/CursosEstudiantesModel");
+const db_1 = require("../db/db");
 const CursoModel_1 = require("../models/CursoModel");
 const EstudianteModel_1 = require("../models/EstudianteModel");
 const validar = () => [
@@ -30,8 +30,8 @@ const validar = () => [
         if (!errores.isEmpty()) {
             // Obtener estudiantes y cursos para volver a renderizar el formulario
             try {
-                const estudianteRepository = conexion_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante);
-                const cursoRepository = conexion_1.AppDataSource.getRepository(CursoModel_1.Curso);
+                const estudianteRepository = db_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante);
+                const cursoRepository = db_1.AppDataSource.getRepository(CursoModel_1.Curso);
                 const [estudiantes, cursos] = yield Promise.all([
                     estudianteRepository.find(),
                     cursoRepository.find()
@@ -55,10 +55,17 @@ exports.validar = validar;
 const inscribirEstudiante = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('Datos recibidos de inscribirEstudiante:', req.body);
     const { curso_id, estudiante_id, nota } = req.body;
+    console.log('curso_id:', curso_id, 'estudiante_id:', estudiante_id);
+    if (!curso_id || isNaN(curso_id)) {
+        return res.status(400).json({ error: 'curso_id es inválido o no está presente' });
+    }
+    if (!estudiante_id || isNaN(estudiante_id)) {
+        return res.status(400).json({ error: 'estudiante_id es inválido o no está presente' });
+    }
     try {
-        const cursoRepository = conexion_1.AppDataSource.getRepository(CursoModel_1.Curso);
-        const estudianteRepository = conexion_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante);
-        const cursoEstudianteRepository = conexion_1.AppDataSource.getRepository(CursoEstudianteModel_1.CursoEstudiante);
+        const cursoRepository = db_1.AppDataSource.getRepository(CursoModel_1.Curso);
+        const estudianteRepository = db_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante);
+        const cursoEstudianteRepository = db_1.AppDataSource.getRepository(CursosEstudiantesModel_1.CursoEstudiante);
         const curso = yield cursoRepository.findOne({ where: { id: Number(curso_id) } });
         if (!curso) {
             throw new Error('Curso no encontrado');
@@ -84,8 +91,8 @@ const inscribirEstudiante = (req, res) => __awaiter(void 0, void 0, void 0, func
     catch (error) {
         console.error('Error al inscribir estudiante en el curso:', error);
         // Obtener nuevamente los estudiantes y cursos para renderizar el formulario con los datos y el error
-        const estudiantes = yield conexion_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante).find();
-        const cursos = yield conexion_1.AppDataSource.getRepository(CursoModel_1.Curso).find();
+        const estudiantes = yield db_1.AppDataSource.getRepository(EstudianteModel_1.Estudiante).find();
+        const cursos = yield db_1.AppDataSource.getRepository(CursoModel_1.Curso).find();
         res.render('inscribirEstudiante', {
             pagina: 'Inscribir Estudiante en Curso',
             errores: [{ msg: error.message }],
@@ -102,7 +109,7 @@ const actualizarNota = (req, res) => __awaiter(void 0, void 0, void 0, function*
         return res.status(400).json({ mensaje: 'La nota es obligatoria' });
     }
     try {
-        const cursoEstudianteRepository = conexion_1.AppDataSource.getRepository(CursoEstudianteModel_1.CursoEstudiante);
+        const cursoEstudianteRepository = db_1.AppDataSource.getRepository(CursosEstudiantesModel_1.CursoEstudiante);
         const inscripcion = yield cursoEstudianteRepository.findOne({ where: { curso_id: Number(curso_id), estudiante_id: Number(estudiante_id) } });
         if (!inscripcion) {
             return res.status(404).json({ mensaje: 'Inscripción no encontrada' });
@@ -119,7 +126,7 @@ const actualizarNota = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.actualizarNota = actualizarNota;
 const listarInscripciones = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const cursoEstudianteRepository = conexion_1.AppDataSource.getRepository(CursoEstudianteModel_1.CursoEstudiante);
+        const cursoEstudianteRepository = db_1.AppDataSource.getRepository(CursosEstudiantesModel_1.CursoEstudiante);
         const inscripciones = yield cursoEstudianteRepository.find({
             relations: ['curso', 'estudiante']
         });
@@ -137,7 +144,7 @@ exports.listarInscripciones = listarInscripciones;
 const obtenerEstudiantesPorCurso = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { curso_id } = req.params;
     try {
-        const cursoEstudianteRepository = conexion_1.AppDataSource.getRepository(CursoEstudianteModel_1.CursoEstudiante);
+        const cursoEstudianteRepository = db_1.AppDataSource.getRepository(CursosEstudiantesModel_1.CursoEstudiante);
         const estudiantesEnCurso = yield cursoEstudianteRepository.find({
             where: { curso_id: Number(curso_id) },
             relations: ['estudiante']
@@ -153,7 +160,7 @@ exports.obtenerEstudiantesPorCurso = obtenerEstudiantesPorCurso;
 const obtenerCursosPorEstudiante = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { estudiante_id } = req.params;
     try {
-        const cursoEstudianteRepository = conexion_1.AppDataSource.getRepository(CursoEstudianteModel_1.CursoEstudiante);
+        const cursoEstudianteRepository = db_1.AppDataSource.getRepository(CursosEstudiantesModel_1.CursoEstudiante);
         const cursosDelEstudiante = yield cursoEstudianteRepository.find({
             where: { estudiante_id: Number(estudiante_id) },
             relations: ['curso']
@@ -169,7 +176,7 @@ exports.obtenerCursosPorEstudiante = obtenerCursosPorEstudiante;
 const eliminarInscripcion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { curso_id, estudiante_id } = req.params;
     try {
-        const cursoEstudianteRepository = conexion_1.AppDataSource.getRepository(CursoEstudianteModel_1.CursoEstudiante);
+        const cursoEstudianteRepository = db_1.AppDataSource.getRepository(CursosEstudiantesModel_1.CursoEstudiante);
         const inscripcion = yield cursoEstudianteRepository.findOne({ where: { curso_id: Number(curso_id), estudiante_id: Number(estudiante_id) } });
         if (!inscripcion) {
             return res.status(404).json({ mensaje: 'Inscripción no encontrada' });

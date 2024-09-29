@@ -3,20 +3,18 @@ import cors from 'cors';
 import morgan from "morgan";
 import path from "path";
 
-import estudianteRouter from './routes/estudianteRouter';
-import profesorRouter from './routes/profesorRoutes'; 
-import cursoRouter from './routes/cursosRouter';
-import cursoEstudianteRouter from './routes/cursoEstudianteRouter';
+import estudianteRouter from './routes/estudianteRoutes';
+import profesorRouter from './routes/profesoresRoutes'; 
+import cursoRouter from './routes/cursosRoutes';
+import cursoEstudianteRouter from './routes/cursoEstudianteRoutes';
 
 import methodOverride from 'method-override';
 
 const app = express();
 
-// Habilitamos Pug
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, '/views'));
 
-// Carpeta pública
 app.use(express.static('public'));
 
 app.use(methodOverride('_method'));
@@ -32,16 +30,12 @@ app.get('/', (req: Request, res: Response) => {
     });
 });
 
-// Rutas de estudiantes
 app.use('/estudiantes', estudianteRouter);
 
-// Rutas de profesores
 app.use('/profesores', profesorRouter);
 
-// Rutas de cursos
 app.use('/cursos', cursoRouter);
 
-// Rutas de cursoestudiante
 app.use('/cursoestudiante', cursoEstudianteRouter);
 
 export default app;

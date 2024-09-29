@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.eliminar = exports.modificar = exports.insertar = exports.consultarUno = exports.consultarTodos = exports.validar = void 0;
 const express_validator_1 = require("express-validator");
 const CursoModel_1 = require("../models/CursoModel");
-const conexion_1 = require("../db/conexion");
+const db_1 = require("../db/db");
 const ProfesorModel_1 = require("../models/ProfesorModel");
 const validar = () => [
     (0, express_validator_1.check)('nombre')
@@ -28,7 +28,7 @@ const validar = () => [
         const errores = (0, express_validator_1.validationResult)(req);
         if (!errores.isEmpty()) {
             try {
-                const profesorRepository = conexion_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
+                const profesorRepository = db_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
                 const profesores = yield profesorRepository.find();
                 return res.render('crearCursos', {
                     pagina: 'Crear Curso',
@@ -51,7 +51,7 @@ const validar = () => [
 exports.validar = validar;
 const consultarTodos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const cursoRepository = conexion_1.AppDataSource.getRepository(CursoModel_1.Curso);
+        const cursoRepository = db_1.AppDataSource.getRepository(CursoModel_1.Curso);
         const cursos = yield cursoRepository.find({ relations: ['profesor', 'estudiantes'] });
         res.render('listarCursos', {
             pagina: 'Lista de Cursos',
@@ -72,7 +72,7 @@ const consultarUno = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         throw new Error('ID inválido, debe ser un número');
     }
     try {
-        const cursoRepository = conexion_1.AppDataSource.getRepository(CursoModel_1.Curso);
+        const cursoRepository = db_1.AppDataSource.getRepository(CursoModel_1.Curso);
         const curso = yield cursoRepository.findOne({ where: { id: idNumber }, relations: ['profesor', 'estudiantes'] });
         if (curso) {
             return curso;
@@ -95,7 +95,7 @@ const insertar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const errores = (0, express_validator_1.validationResult)(req);
     if (!errores.isEmpty()) {
         try {
-            const profesorRepository = conexion_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
+            const profesorRepository = db_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
             const profesores = yield profesorRepository.find();
             return res.render('crearCursos', {
                 pagina: 'Crear Curso',
@@ -113,7 +113,7 @@ const insertar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { nombre, descripcion, profesor_id } = req.body;
     try {
         // Tu código existente para insertar el curso
-        yield conexion_1.AppDataSource.transaction((transactionalEntityManager) => __awaiter(void 0, void 0, void 0, function* () {
+        yield db_1.AppDataSource.transaction((transactionalEntityManager) => __awaiter(void 0, void 0, void 0, function* () {
             const cursoRepository = transactionalEntityManager.getRepository(CursoModel_1.Curso);
             const profesorRepository = transactionalEntityManager.getRepository(ProfesorModel_1.Profesor);
             const profesor = yield profesorRepository.findOne({ where: { id: Number(profesor_id) } });
@@ -129,7 +129,7 @@ const insertar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (err instanceof Error) {
             console.error('Error al insertar el curso:', err);
             // En caso de error, renderizamos la vista con el mensaje de error
-            const profesorRepository = conexion_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
+            const profesorRepository = db_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
             const profesores = yield profesorRepository.find();
             res.render('crearCursos', {
                 pagina: 'Crear Curso',
@@ -145,8 +145,8 @@ const modificar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { nombre, descripcion, profesor_id } = req.body;
     try {
-        const cursoRepository = conexion_1.AppDataSource.getRepository(CursoModel_1.Curso);
-        const profesorRepository = conexion_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
+        const cursoRepository = db_1.AppDataSource.getRepository(CursoModel_1.Curso);
+        const profesorRepository = db_1.AppDataSource.getRepository(ProfesorModel_1.Profesor);
         const curso = yield cursoRepository.findOne({ where: { id: parseInt(id) } });
         if (!curso) {
             return res.status(404).send('Curso no encontrado');
@@ -168,7 +168,7 @@ exports.modificar = modificar;
 const eliminar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        yield conexion_1.AppDataSource.transaction((transactionalEntityManager) => __awaiter(void 0, void 0, void 0, function* () {
+        yield db_1.AppDataSource.transaction((transactionalEntityManager) => __awaiter(void 0, void 0, void 0, function* () {
             const cursoRepository = transactionalEntityManager.getRepository(CursoModel_1.Curso);
             const curso = yield cursoRepository.findOne({ where: { id: Number(id) }, relations: ['estudiantes'] });
             if (!curso) {
